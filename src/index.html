@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Graph Visualization</title>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; }
+        svg { width: 100%; height: 90vh; background-color: #f8f8f8; }
+        .node { fill: steelblue; stroke: #fff; stroke-width: 1.5px; cursor: pointer; }
+        .link { stroke: #999; stroke-opacity: 0.6; }
+        .context-menu { position: absolute; background: white; border: 1px solid #ccc; display: none; padding: 5px; }
+        .context-menu div { padding: 5px; cursor: pointer; }
+        .context-menu div:hover { background: #ddd; }
+        #hidden-panel { position: absolute; top: 10px; right: 10px; background: white; padding: 10px; border: 1px solid #ccc; }
+    </style>
+</head>
+<body>
+    <svg></svg>
+    <div id="context-menu" class="context-menu">
+        <div onclick="menuAction('open')">Open</div>
+        <div onclick="menuAction('hide')">Hide</div>
+        <div onclick="menuAction('rename')">Rename</div>
+    </div>
+    <div id="hidden-panel">Hidden Nodes:</div>
+    <script>
+        const graph = {
+            nodes: [
+                { id: "1", load: 10 },
+                { id: "2", load: 20 },
+                { id: "3", load: 5 },
+                { id: "4", load: 15 }
+            ],
+            links: [
+                { source: "1", target: "2" },
+                { source: "2", target: "3" },
+                { source: "3", target: "4" },
+                { source: "4", target: "1" }
+            ]
+        };
+
+        const svg = d3.select("svg"),
+              width = window.innerWidth,
+              height = window.innerHeight;
+
+        const simulation = d3.forceSimulation(graph.nodes)
+            .force("link", d3.forceLink(graph.links).id(d => d.id).distance(100))
+            .force("charge", d3.forceManyBody().strength(-200))
+            .force("center", d3.forceCenter(width / 2, height / 2));
+
+        const link = svg.append("g")
+            .selectAll("line")
+            .data(graph.links)
+            .enter().append("line")
+            .attr("class", "link");
+
+        const node = svg.append("g")
+            .selectAll("circle")
+            .data(graph.nodes)
+            .enter().append("circle")
+            .attr("class", "node")
+            .attr("r", d => d.load * 0.8)
+            .on("contextmenu", (event, d) => showContextMenu(event, d))
+            .call(d3.drag()
+                .on("start", dragstarted)
+                .on("drag", dragged)
+                .on("end", dragended));
+
+        simulation.on("tick", () => {
+            link.attr("x1", d => d.source.x)
+                .attr("y1", d => d.source.y)
+                .attr("x2", d => d.target.x)
+                .attr("y2", d => d.target.y);
+
+            node.attr("cx", d => d.x)
+                .attr("cy", d => d.y);
+        });
+
+        let selectedNode = null;
+        const contextMenu = document.getElementById("context-menu");
+        const hiddenPanel = document.getElementById("hidden-panel");
+        
+        function showContextMenu(event, d) {
+            event.preventDefault();
+            selectedNode = d;
+            contextMenu.style.left = `${event.pageX}px`;
+            contextMenu.style.top = `${event.pageY}px`;
+            contextMenu.style.display = "block";
+        }
+
+        window.onclick = () => contextMenu.style.display = "none";
+
+        function menuAction(action) {
+            if (!selectedNode) return;
+            console.log(`Action: ${action}, Node ID: ${selectedNode.id}`);
+            
+            if (action === "hide") {
+                d3.selectAll("circle").filter(d => d.id === selectedNode.id).remove();
+                const item = document.createElement("div");
+                item.innerText = `Node ${selectedNode.id}`;
+                hiddenPanel.appendChild(item);
+            }
+        }
+
+        function dragstarted(event, d) {
+            if (!event.active) simulation.alphaTarget(0.3).restart();
+            d.fx = d.x;
+            d.fy = d.y;
+        }
+
+        function dragged(event, d) {
+            d.fx = event.x;
+            d.fy = event.y;
+        }
+
+        function dragended(event, d) {
+            if (!event.active) simulation.alphaTarget(0);
+            d.fx = null;
+            d.fy = null;
+        }
+    </script>
+</body>
+</html>
