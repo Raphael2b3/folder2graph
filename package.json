@@ -16,8 +16,12 @@
   "contributes": {
     "commands": [
       {
-        "command": "folder2graph.helloWorld",
-        "title": "Hello World"
+        "command": "folder2graph.hello",
+        "title": "Hi!"
+      },
+      {
+        "command": "folder2graph.start",
+        "title": "Folder2Graph"
       }
     ]
   },
