@@ -4,7 +4,6 @@
   "description": "Navigating through big folder structures can be really annoying. This extensions displays your folder structs with its files in a graph. You can click on the nodes to open files or even hide unnecessary files or folders so it is easier for you to navigate.",
   "version": "0.0.1",
   "private": true,
-  "type": "module",
   "engines": {
     "vscode": "^1.98.0"
   },

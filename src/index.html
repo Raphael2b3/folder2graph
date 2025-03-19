@@ -24,7 +24,11 @@
         <div onclick="menuAction('rename')">Rename</div>
     </div>
     <div id="hidden-panel">Hidden Nodes:</div>
+    <button onclick="alertPopUp()">Click Me!</button>
     <script>
+        function alertPopUp() {
+            alert("Hello World!");
+        }
         const graph = {
             nodes: [
                 { id: "1", load: 10 },
