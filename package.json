@@ -3,6 +3,8 @@
   "displayName": "folder2graph",
   "description": "Navigating through big folder structures can be really annoying. This extensions displays your folder structs with its files in a graph. You can click on the nodes to open files or even hide unnecessary files or folders so it is easier for you to navigate.",
   "version": "0.0.1",
+  "private": true,
+  "type": "module",
   "engines": {
     "vscode": "^1.98.0"
   },
@@ -25,7 +27,11 @@
     "watch": "tsc -watch -p ./",
     "pretest": "npm run compile && npm run lint",
     "lint": "eslint src",
-    "test": "vscode-test"
+    "test": "vscode-test",
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "check": "svelte-check --tsconfig ./tsconfig.app.json && tsc -p tsconfig.node.json"
   },
   "devDependencies": {
     "@types/vscode": "^1.98.0",
@@ -36,6 +42,11 @@
     "eslint": "^9.21.0",
     "typescript": "^5.7.3",
     "@vscode/test-cli": "^0.0.10",
-    "@vscode/test-electron": "^2.4.1"
+    "@vscode/test-electron": "^2.4.1",
+    "@sveltejs/vite-plugin-svelte": "^5.0.3",
+    "@tsconfig/svelte": "^5.0.4",
+    "svelte": "^5.20.2",
+    "svelte-check": "^4.1.4",
+    "vite": "^6.2.0"
   }
 }
